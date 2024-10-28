@@ -3,13 +3,15 @@ import re
 from vocabulary import Vocabulary, iVocabulary
 
 # Initialize the Streamlit app
-st.title("Text Prediction Application")
+st.title("Next Word Prediction Application")
 
 # User input
 input_text = st.text_input("Enter the input text:", "Once upon a time")
 context_length = st.selectbox("Context length", [5,10,15])
-embedding_dim = st.selectbox("Embedding dimension", [128, 64])
+# context_length = st.select_slider("Context length", [5,10,15], 5)
+embedding_dim = st.selectbox("Embedding dimension", [64,128])
 # embedding_dim = st.slider("Embedding dimension", 16, 128, 64)
+# embedding_dim = st.select_slider("Embedding dimension", [64,128],64)
 activation_function = st.selectbox("Activation function", ["relu", "tanh"])
 max_len = st.number_input("Maximum lenght of predicted text", min_value=0, max_value=1000, value=30)
 # num_words_to_predict = st.slider("Number of words to predict", 1, 50, 10)
@@ -102,5 +104,6 @@ def generate_para(model, Vocabulary, iVocabulary, block_size, user_input=None, m
 
 if st.button("Generate Prediction"):
     predicted_text = generate_para(pred_model,Vocabulary,iVocabulary,context_length,input_text,max_len)
+    # predicted_text = str.title(predicted_text)
     st.write("Predicted Text:", predicted_text)
     # st.write("Predicted Text:",)
