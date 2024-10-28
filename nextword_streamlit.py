@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 from vocabulary import Vocabulary, iVocabulary
 
 # Initialize the Streamlit app
@@ -12,6 +13,7 @@ embedding_dim = st.selectbox("Embedding dimension", [128, 64])
 activation_function = st.selectbox("Activation function", ["relu", "tanh"])
 max_len = st.number_input("Maximum lenght of predicted text", min_value=0, max_value=1000, value=30)
 # num_words_to_predict = st.slider("Number of words to predict", 1, 50, 10)
+input_text = re.sub(r'[^a-zA-Z0-9 \.]', '', input_text)
 input_text = str.lower(input_text)
 
 
