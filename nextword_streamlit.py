@@ -1,17 +1,21 @@
 import streamlit as st
+import re
 from vocabulary import Vocabulary, iVocabulary
 
 # Initialize the Streamlit app
-st.title("Text Prediction Application")
+st.title("Next Word Prediction Application")
 
 # User input
 input_text = st.text_input("Enter the input text:", "Once upon a time")
 context_length = st.selectbox("Context length", [5,10,15])
-embedding_dim = st.selectbox("Embedding dimension", [128, 64])
+# context_length = st.select_slider("Context length", [5,10,15], 5)
+embedding_dim = st.selectbox("Embedding dimension", [64,128])
 # embedding_dim = st.slider("Embedding dimension", 16, 128, 64)
+# embedding_dim = st.select_slider("Embedding dimension", [64,128],64)
 activation_function = st.selectbox("Activation function", ["relu", "tanh"])
 max_len = st.number_input("Maximum lenght of predicted text", min_value=0, max_value=1000, value=30)
 # num_words_to_predict = st.slider("Number of words to predict", 1, 50, 10)
+input_text = re.sub(r'[^a-zA-Z0-9 \.]', '', input_text)
 input_text = str.lower(input_text)
 
 
@@ -43,7 +47,7 @@ if activation_function == 'relu':
     # model_64_10_relu = NextWord(10, len(Vocabulary), 64, 1024).to(device)
     # model_64_15_relu = NextWord(15, len(Vocabulary), 64, 1024).to(device)
     pred_model = NextWord(context_length, len(Vocabulary), embedding_dim, 1024).to(device)
-    pred_model.load_state_dict(torch.load(f"model_{embedding_dim}_{context_length}_relu.pth", map_location=device))
+    pred_model.load_state_dict(torch.load(f"models/model_{embedding_dim}_{context_length}_relu.pth", map_location=device))
 
 if activation_function == 'tanh':
     class NextWord(nn.Module):
@@ -68,7 +72,7 @@ if activation_function == 'tanh':
     # model_64_10_relu = NextWord(10, len(Vocabulary), 64, 1024).to(device)
     # model_64_15_relu = NextWord(15, len(Vocabulary), 64, 1024).to(device)
     pred_model = NextWord(context_length, len(Vocabulary), embedding_dim, 1024).to(device)
-    pred_model.load_state_dict(torch.load(f"model_{embedding_dim}_{context_length}_tanh.pth", map_location=device))
+    pred_model.load_state_dict(torch.load(f"models/model_{embedding_dim}_{context_length}_tanh.pth", map_location=device))
 
 def generate_para(model, Vocabulary, iVocabulary, block_size, user_input=None, max_len=30):
     # Initialize context with user-provided input or default to [0] * block_size if None
@@ -93,12 +97,13 @@ def generate_para(model, Vocabulary, iVocabulary, block_size, user_input=None, m
         new_para = new_para + " " + word
         # Update context for next prediction
         context = context[1:] + [ix]
-        if '.' == word[-1]:
-            break
+        # if '.' == word[-1]:
+        #     break
 
     return new_para
 
 if st.button("Generate Prediction"):
     predicted_text = generate_para(pred_model,Vocabulary,iVocabulary,context_length,input_text,max_len)
+    # predicted_text = str.title(predicted_text)
     st.write("Predicted Text:", predicted_text)
     # st.write("Predicted Text:",)
