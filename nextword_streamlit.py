@@ -43,7 +43,7 @@ if activation_function == 'relu':
     # model_64_10_relu = NextWord(10, len(Vocabulary), 64, 1024).to(device)
     # model_64_15_relu = NextWord(15, len(Vocabulary), 64, 1024).to(device)
     pred_model = NextWord(context_length, len(Vocabulary), embedding_dim, 1024).to(device)
-    pred_model.load_state_dict(torch.load(f"model_{embedding_dim}_{context_length}_relu.pth", map_location=device))
+    pred_model.load_state_dict(torch.load(f"models/model_{embedding_dim}_{context_length}_relu.pth", map_location=device))
 
 if activation_function == 'tanh':
     class NextWord(nn.Module):
@@ -68,7 +68,7 @@ if activation_function == 'tanh':
     # model_64_10_relu = NextWord(10, len(Vocabulary), 64, 1024).to(device)
     # model_64_15_relu = NextWord(15, len(Vocabulary), 64, 1024).to(device)
     pred_model = NextWord(context_length, len(Vocabulary), embedding_dim, 1024).to(device)
-    pred_model.load_state_dict(torch.load(f"model_{embedding_dim}_{context_length}_tanh.pth", map_location=device))
+    pred_model.load_state_dict(torch.load(f"models/model_{embedding_dim}_{context_length}_tanh.pth", map_location=device))
 
 def generate_para(model, Vocabulary, iVocabulary, block_size, user_input=None, max_len=30):
     # Initialize context with user-provided input or default to [0] * block_size if None
@@ -93,8 +93,8 @@ def generate_para(model, Vocabulary, iVocabulary, block_size, user_input=None, m
         new_para = new_para + " " + word
         # Update context for next prediction
         context = context[1:] + [ix]
-        if '.' == word[-1]:
-            break
+        # if '.' == word[-1]:
+        #     break
 
     return new_para
 
