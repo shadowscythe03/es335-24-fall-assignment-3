@@ -1,14 +1,17 @@
+# pip install -r requirements.txt
 import streamlit as st
 import re
 from vocabulary import Vocabulary, iVocabulary
+import torch
+import torch.nn as nn
 
 # Initialize the Streamlit app
-st.title("Text Prediction Application 1k")
+st.title("Next Word Prediction Application")
 
 # User input
 input_text = st.text_input("Enter the input text:", "Once upon a time")
 context_length = st.selectbox("Context length", [5,10,15])
-embedding_dim = st.selectbox("Embedding dimension", [128, 64])
+embedding_dim = st.selectbox("Embedding dimension", [64,128])
 # embedding_dim = st.slider("Embedding dimension", 16, 128, 64)
 activation_function = st.selectbox("Activation function", ["relu", "tanh"])
 max_len = st.number_input("Maximum lenght of predicted text", min_value=0, max_value=1000, value=30)
@@ -18,8 +21,6 @@ input_text = str.lower(input_text)
 
 
 
-import torch
-import torch.nn as nn
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if activation_function == 'relu':
