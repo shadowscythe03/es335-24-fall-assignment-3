@@ -1,6 +1,9 @@
+# pip install -r requirements.txt
 import streamlit as st
 import re
 from vocabulary import Vocabulary, iVocabulary
+import torch
+import torch.nn as nn
 
 # Initialize the Streamlit app
 st.title("Next Word Prediction Application")
@@ -18,8 +21,6 @@ input_text = str.lower(input_text)
 
 
 
-import torch
-import torch.nn as nn
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 if activation_function == 'relu':
